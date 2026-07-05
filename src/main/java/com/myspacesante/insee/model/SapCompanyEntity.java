@@ -1,11 +1,18 @@
 package com.myspacesante.insee.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.OrderColumn;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.OffsetDateTime;
 
 /* Bloc persistance: entite BDD pour une entreprise SAP issue d'INSEE. */
@@ -36,13 +43,52 @@ public class SapCompanyEntity {
   private String activiteLibelle;
 
   @Column(length = 255)
-  private String adresse;
+  private String categorieJuridique;
+
+  @Column(length = 50)
+  private String trancheEffectifs;
+
+  @Column(length = 50)
+  private String statutDiffusionEtablissement;
+
+  @Column(length = 10)
+  private String activitePrincipaleNaf25;
+
+  @Column(length = 10)
+  private String activitePrincipaleRegistreMetiers;
+
+  @Column(length = 255)
+  private String adresseComplement;
+
+  @Column(length = 20)
+  private String adresseNumeroVoie;
+
+  @Column(length = 20)
+  private String adresseIndiceRepetition;
+
+  @Column(length = 50)
+  private String adresseTypeVoie;
+
+  @Column(length = 255)
+  private String adresseLibelleVoie;
 
   @Column(length = 16)
   private String codePostal;
 
   @Column(length = 255)
   private String ville;
+
+  @Column(length = 20)
+  private String codeCommune;
+
+  @Column(length = 255)
+  private String adresseIdentifiant;
+
+  @Column(length = 50)
+  private String dateCreationEtablissement;
+
+  @Column(length = 50)
+  private String dateDernierTraitementEtablissement;
 
   @Column(length = 50)
   private String etatAdministratif;
@@ -53,8 +99,11 @@ public class SapCompanyEntity {
   @Column(nullable = false)
   private boolean matchedByKeywords;
 
-  @Column(length = 1000)
-  private String matchedKeywords;
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "sap_company_matched_keywords", joinColumns = @JoinColumn(name = "sap_company_id"))
+  @OrderColumn(name = "keyword_order")
+  @Column(name = "keyword", length = 255)
+  private List<String> matchedKeywords = new ArrayList<>();
 
   @Column(nullable = false)
   private OffsetDateTime syncedAt;
@@ -114,12 +163,84 @@ public class SapCompanyEntity {
     this.activiteLibelle = activiteLibelle;
   }
 
-  public String getAdresse() {
-    return adresse;
+  public String getCategorieJuridique() {
+    return categorieJuridique;
   }
 
-  public void setAdresse(String adresse) {
-    this.adresse = adresse;
+  public void setCategorieJuridique(String categorieJuridique) {
+    this.categorieJuridique = categorieJuridique;
+  }
+
+  public String getTrancheEffectifs() {
+    return trancheEffectifs;
+  }
+
+  public void setTrancheEffectifs(String trancheEffectifs) {
+    this.trancheEffectifs = trancheEffectifs;
+  }
+
+  public String getStatutDiffusionEtablissement() {
+    return statutDiffusionEtablissement;
+  }
+
+  public void setStatutDiffusionEtablissement(String statutDiffusionEtablissement) {
+    this.statutDiffusionEtablissement = statutDiffusionEtablissement;
+  }
+
+  public String getActivitePrincipaleNaf25() {
+    return activitePrincipaleNaf25;
+  }
+
+  public void setActivitePrincipaleNaf25(String activitePrincipaleNaf25) {
+    this.activitePrincipaleNaf25 = activitePrincipaleNaf25;
+  }
+
+  public String getActivitePrincipaleRegistreMetiers() {
+    return activitePrincipaleRegistreMetiers;
+  }
+
+  public void setActivitePrincipaleRegistreMetiers(String activitePrincipaleRegistreMetiers) {
+    this.activitePrincipaleRegistreMetiers = activitePrincipaleRegistreMetiers;
+  }
+
+  public String getAdresseComplement() {
+    return adresseComplement;
+  }
+
+  public void setAdresseComplement(String adresseComplement) {
+    this.adresseComplement = adresseComplement;
+  }
+
+  public String getAdresseNumeroVoie() {
+    return adresseNumeroVoie;
+  }
+
+  public void setAdresseNumeroVoie(String adresseNumeroVoie) {
+    this.adresseNumeroVoie = adresseNumeroVoie;
+  }
+
+  public String getAdresseIndiceRepetition() {
+    return adresseIndiceRepetition;
+  }
+
+  public void setAdresseIndiceRepetition(String adresseIndiceRepetition) {
+    this.adresseIndiceRepetition = adresseIndiceRepetition;
+  }
+
+  public String getAdresseTypeVoie() {
+    return adresseTypeVoie;
+  }
+
+  public void setAdresseTypeVoie(String adresseTypeVoie) {
+    this.adresseTypeVoie = adresseTypeVoie;
+  }
+
+  public String getAdresseLibelleVoie() {
+    return adresseLibelleVoie;
+  }
+
+  public void setAdresseLibelleVoie(String adresseLibelleVoie) {
+    this.adresseLibelleVoie = adresseLibelleVoie;
   }
 
   public String getCodePostal() {
@@ -136,6 +257,38 @@ public class SapCompanyEntity {
 
   public void setVille(String ville) {
     this.ville = ville;
+  }
+
+  public String getCodeCommune() {
+    return codeCommune;
+  }
+
+  public void setCodeCommune(String codeCommune) {
+    this.codeCommune = codeCommune;
+  }
+
+  public String getAdresseIdentifiant() {
+    return adresseIdentifiant;
+  }
+
+  public void setAdresseIdentifiant(String adresseIdentifiant) {
+    this.adresseIdentifiant = adresseIdentifiant;
+  }
+
+  public String getDateCreationEtablissement() {
+    return dateCreationEtablissement;
+  }
+
+  public void setDateCreationEtablissement(String dateCreationEtablissement) {
+    this.dateCreationEtablissement = dateCreationEtablissement;
+  }
+
+  public String getDateDernierTraitementEtablissement() {
+    return dateDernierTraitementEtablissement;
+  }
+
+  public void setDateDernierTraitementEtablissement(String dateDernierTraitementEtablissement) {
+    this.dateDernierTraitementEtablissement = dateDernierTraitementEtablissement;
   }
 
   public String getEtatAdministratif() {
@@ -162,11 +315,11 @@ public class SapCompanyEntity {
     this.matchedByKeywords = matchedByKeywords;
   }
 
-  public String getMatchedKeywords() {
+  public List<String> getMatchedKeywords() {
     return matchedKeywords;
   }
 
-  public void setMatchedKeywords(String matchedKeywords) {
+  public void setMatchedKeywords(List<String> matchedKeywords) {
     this.matchedKeywords = matchedKeywords;
   }
 

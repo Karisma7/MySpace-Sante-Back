@@ -89,26 +89,36 @@ public class SapCompanySyncService {
     entity.setEnseigne(enseigne);
     entity.setActivitePrincipale(nafCode);
     entity.setActiviteLibelle(activityLabel);
-    entity.setAdresse(buildAddress(establishment));
+    entity.setCategorieJuridique(text(uniteLegale, "categorieJuridiqueUniteLegale"));
+    entity.setTrancheEffectifs(firstNonBlank(
+      text(establishment, "trancheEffectifsEtablissement"),
+      text(uniteLegale, "trancheEffectifsUniteLegale")
+    ));
+    entity.setStatutDiffusionEtablissement(text(establishment, "statutDiffusionEtablissement"));
+    entity.setActivitePrincipaleNaf25(firstNonBlank(
+      text(establishment, "activitePrincipaleNAF25Etablissement"),
+      text(uniteLegale, "activitePrincipaleNAF25UniteLegale")
+    ));
+    entity.setActivitePrincipaleRegistreMetiers(text(establishment, "activitePrincipaleRegistreMetiersEtablissement"));
+    entity.setAdresseComplement(text(establishment.path("adresseEtablissement"), "complementAdresseEtablissement"));
+    entity.setAdresseNumeroVoie(text(establishment.path("adresseEtablissement"), "numeroVoieEtablissement"));
+    entity.setAdresseIndiceRepetition(text(establishment.path("adresseEtablissement"), "indiceRepetitionEtablissement"));
+    entity.setAdresseTypeVoie(text(establishment.path("adresseEtablissement"), "typeVoieEtablissement"));
+    entity.setAdresseLibelleVoie(text(establishment.path("adresseEtablissement"), "libelleVoieEtablissement"));
     entity.setCodePostal(text(establishment, "codePostalEtablissement"));
-    entity.setVille(text(establishment, "libelleCommuneEtablissement"));
+    entity.setVille(text(establishment.path("adresseEtablissement"), "libelleCommuneEtablissement"));
+    entity.setCodeCommune(text(establishment.path("adresseEtablissement"), "codeCommuneEtablissement"));
+    entity.setAdresseIdentifiant(text(establishment.path("adresseEtablissement"), "identifiantAdresseEtablissement"));
+    entity.setDateCreationEtablissement(text(establishment, "dateCreationEtablissement"));
+    entity.setDateDernierTraitementEtablissement(text(establishment, "dateDernierTraitementEtablissement"));
     entity.setEtatAdministratif(text(establishment, "etatAdministratifEtablissement"));
     entity.setMatchedByNafCode(match.byNafCode());
     entity.setMatchedByKeywords(match.byKeywords());
-    entity.setMatchedKeywords(String.join(", ", match.matchedKeywords()));
+    entity.setMatchedKeywords(new java.util.ArrayList<>(match.matchedKeywords()));
     entity.setSyncedAt(OffsetDateTime.now());
     entity.setRawPayload(serialize(establishment));
     repository.save(entity);
     return true;
-  }
-
-  /* Bloc utilitaire: reconstituer une adresse lisible pour exposition simple. */
-  private String buildAddress(JsonNode establishment) {
-    return joinNonBlank(
-        text(establishment, "numeroVoieEtablissement"),
-        text(establishment, "typeVoieEtablissement"),
-        text(establishment, "libelleVoieEtablissement")
-    );
   }
 
   private String serialize(JsonNode node) {
