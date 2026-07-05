@@ -1,0 +1,6 @@
+# Variables locales du backend.
+.env
+.env.local
+
+# Sorties de build Maven.
+target/
